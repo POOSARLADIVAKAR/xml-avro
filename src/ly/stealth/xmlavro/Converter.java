@@ -85,7 +85,7 @@ public class Converter {
 
         private static File replaceExtension(File file, String newExtension) {
             String fileName = file.getPath();
-
+            // System.out.println(fileName);
             int dotIdx = fileName.lastIndexOf('.');
             if (dotIdx != -1) fileName = fileName.substring(0, dotIdx);
 
@@ -113,6 +113,10 @@ public class Converter {
 
     public static void main(String... args) throws IOException {
         Options opts;
+
+        System.out.println(args[0]);
+        System.out.println(args[1]);
+        
         try {
             opts = new Options(args);
         } catch (IllegalArgumentException e) {
@@ -122,7 +126,7 @@ public class Converter {
         }
 
         System.out.println("Converting: \n" + opts.xsdFile + " -> " + opts.avscFile + "\n" + opts.xmlFile + " -> " + opts.avroFile);
-
+       
         SchemaBuilder schemaBuilder = new SchemaBuilder();
         schemaBuilder.setDebug(opts.debug);
         if (opts.baseDir != null) schemaBuilder.setResolver(new BaseDirResolver(opts.baseDir));

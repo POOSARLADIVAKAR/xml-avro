@@ -48,31 +48,35 @@ import java.util.List;
 
 public class Converter {
     private static Protocol protocol;
-    static {
+    static { //Loads first but only  once in memory that too during initialization or accesing static one's
         try {
             InputStream stream = Converter.class.getResourceAsStream("xml.avsc");
             if (stream == null) throw new IllegalStateException("Classpath should include xml.avsc");
 
             protocol = Protocol.parse(stream);
+            // System.out.println(protocol);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void xmlToAvro(File xmlFile, File avroFile) throws IOException, SAXException {
-        Schema schema = protocol.getType("Element");
-
+        Schema schema = protocol.getType("Element"); //returns the named type Schema object
+        // System.out.println(schema);
         Document doc = parse(xmlFile);
         DatumWriter<GenericRecord> datumWriter = new SpecificDatumWriter<>(schema);
-
+        // writing a generic record into the file and pass Schema object
         try (DataFileWriter<GenericRecord> fileWriter = new DataFileWriter<>(datumWriter)) {
-            fileWriter.create(schema, avroFile);
+            fileWriter.create(schema, avroFile); //create avro file with this schema
             fileWriter.append(wrapElement(doc.getDocumentElement()));
+            // getDocElemt return whole data tree with root
+            //append data to this newly created file
         }
     }
 
     private static GenericData.Record wrapElement(Element el) {
         GenericData.Record record = new GenericData.Record(protocol.getType("Element"));
+        // accepts record's schema as  argument
         record.put("name", el.getNodeName());
 
         NamedNodeMap attributeNodes = el.getAttributes();
@@ -87,11 +91,14 @@ public class Converter {
         NodeList childNodes = el.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
+            System.out.println(i+" ");
+            System.out.println(node);
             if (node.getNodeType() == Node.ELEMENT_NODE)
                 childArray.add(wrapElement((Element) node));
 
             if (node.getNodeType() == Node.TEXT_NODE)
-                childArray.add(node.getTextContent());
+                // childArray.add((String)node.getTextContent());
+                record.put("data",node.getTextContent());
         }
         record.put("children", childArray);
 

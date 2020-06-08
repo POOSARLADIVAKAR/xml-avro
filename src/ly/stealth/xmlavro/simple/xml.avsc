@@ -1,4 +1,4 @@
-{
+{ 
   "namespace": "ly.stealth.xmlavro",
   "protocol": "xml",
 
@@ -18,7 +18,9 @@
      "fields": [
          {"name": "name", "type": "string"},
          {"name": "attributes", "type": {"type": "array", "items": "Attribute"}},
-         {"name": "children", "type": {"type": "array", "items": ["Element", "string"]} }
+         {"name": "children", "type": {"type": "array", "items": ["Element", "string"]} },
+         {"name": "data","type":"string"}
+        //  {"name": "data","type":["null","string"],"default":"null"}
      ]
     }
   ]
